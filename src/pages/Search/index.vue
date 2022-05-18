@@ -1,19 +1,16 @@
 <template>
   <div>
-      我是搜索
-      <h1>params参数：{{$route.params.keyword}}</h1>
-      <h1>query参数：{{$route.query.keys}}</h1>
+    <!-- 全局组件 -->
+    <TypeNav />
   </div>
 </template>
 
 <script>
 export default {
-    name: 'Search',
-    // 路由组件可以传递props
-    props: ['keyword', "keys"]
-}
+  name: "Search",
+  // 路由组件可以传递props
+};
 </script>
 
 <style>
-
 </style>

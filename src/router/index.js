@@ -43,7 +43,7 @@ export default new VueRouter({
         },
         {
             // params参数后加?代表可传可不传
-            path: "/search/:keyword?",
+            path: "/search/:keyword",
             component: Search,
             meta: {show: true},
             name: "search",
