@@ -13,6 +13,8 @@ import router from '@/router'
 import store from '@/store'
 // 引入MockServe.js
 import '@/mock/mockServe'
+// 引入swiper的样式
+import 'swiper/css/swiper.css'
 new Vue({
     render: h => h(App),
     // 注册路由

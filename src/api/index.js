@@ -1,5 +1,6 @@
 // 对API进行统一管理
 import requests from "./request";
+import mockRequest from './mockAjax'
 
 // 三级联动接口
 export const reqCategoryList = () => {
@@ -8,4 +9,9 @@ export const reqCategoryList = () => {
         url: '/product/getBaseCategoryList',
         method: 'get'
     })
+}
+
+// 获取banner（Home首页轮播图）
+export const reqGetBannerList = () => {
+    return mockRequest.get('/banner')
 }
