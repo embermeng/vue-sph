@@ -106,32 +106,40 @@ export default {
     // 派发action: 通知vuex发起ajax请求，将数据存储在仓库中
     this.$store.dispatch("getBannerList");
     // 因为dispatch中涉及到了异步语句，导致v-for遍历的时候，结构还没有完全，所以不能在这直接new Swiper
-    setTimeout(() => {
-      var mySwiper = new Swiper(".swiper-container", {
-        loop: true, // 循环模式选项
-
-        // 如果需要分页器
-        pagination: {
-          el: ".swiper-pagination",
-        },
-
-        // 如果需要前进后退按钮
-        navigation: {
-          nextEl: ".swiper-button-next",
-          prevEl: ".swiper-button-prev",
-        },
-
-        // 如果需要滚动条
-        scrollbar: {
-          el: ".swiper-scrollbar",
-        },
-      });
-    }, 1000);
   },
   computed: {
     ...mapState({
       bannerList: (state) => state.home.bannerList,
     }),
+  },
+  watch: {
+    // 监听bannerList数据的变化，因为这条数据发生过变化：由空数组变为4个元素
+    bannerList: {
+      handler(newValue, oldValue) {
+        // 如果从服务器得到了数据，就创建Swiper的实例
+        // 只能保证数据有了，但是没法保证v-for已经执行结束了。
+        // nextTick: 将回调延迟到下次 DOM 更新循环之后 执行。在 修改数据之后 立即使用它，然后等待 DOM 更新。
+        this.$nextTick(() => {
+          // 执行这个回调的时候，保证服务器数据会来了，v-for执行完毕了，轮播图的结构就有了
+          var mySwiper = new Swiper(".swiper-container", {
+            loop: true, // 循环模式选项
+            // 如果需要分页器
+            pagination: {
+              el: ".swiper-pagination",
+            },
+            // 如果需要前进后退按钮
+            navigation: {
+              nextEl: ".swiper-button-next",
+              prevEl: ".swiper-button-prev",
+            },
+            // 如果需要滚动条
+            scrollbar: {
+              el: ".swiper-scrollbar",
+            },
+          });
+        });
+      },
+    },
   },
 };
 </script>
