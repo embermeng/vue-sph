@@ -11,6 +11,7 @@ const state = {
 }
 // mutations是唯一修改state的地方
 const mutations = {
+    // 第二个形参是action中commit的第二个参数
     CATEGORYLIST(state, categoryList) {
         state.categoryList = categoryList
     },
