@@ -60,7 +60,7 @@
                   <div class="price">
                     <strong>
                       <em style="margin-right: 10px">¥</em>
-                      <i>{{good.price}}</i>
+                      <i>{{ good.price }}</i>
                     </strong>
                   </div>
                   <div class="attr">
@@ -68,11 +68,14 @@
                       target="_blank"
                       href="javascript:void(0);"
                       title="促销信息，下单即赠送三个月CIBN视频会员卡！【小米电视新品4A 58 火爆预约中】"
-                      >{{good.title}}</a
+                      >{{ good.title }}</a
                     >
                   </div>
                   <div class="commit">
-                    <i class="command">已有<span>{{good.hotScore}}</span>人评价</i>
+                    <i class="command"
+                      >已有<span>{{ good.hotScore }}</span
+                      >人评价</i
+                    >
                   </div>
                   <div class="operate">
                     <a
@@ -133,12 +136,55 @@ export default {
   components: {
     SearchSelector,
   },
+  data() {
+    return {
+      // 带给服务器的参数
+      searchParams: {
+        // 一级分类的id
+        category1Id: "",
+        // 二级分类的id
+        category2Id: "",
+        // 三级分类的id
+        category3Id: "",
+        // 分类的名字
+        categoryName: "",
+        // 搜索关键字
+        keyword: "",
+        // 排序
+        order: "",
+        // 当前第几页
+        pageNo: 1,
+        // 每页展示数据的个数
+        pageSize: 10,
+        // 平台售卖属性操作带的参数
+        props: [],
+        // 品牌
+        trademark: "",
+      },
+    };
+  },
+  beforeMount() {
+    // 在发请求之前带给服务器的参数
+    // 复杂的写法
+    /* this.searchParams.category1Id = this.$route.query.category1Id
+    this.searchParams.category2Id = this.$route.query.category2Id
+    this.searchParams.category3Id = this.$route.query.category3Id
+    this.searchParams.categoryName = this.$route.query.categoryName
+    this.searchParams.keyword = this.$route.params.keyword */
+    Object.assign(this.searchParams, this.$route.query, this.$route.params)
+  },
   mounted() {
-    this.$store.dispatch("getSearchList", {});
+    this.getSearchData();
   },
   computed: {
     // mapGetters参数的写法是数组，因为getters计算是没有划分模块的（home, search）
     ...mapGetters(["goodsList", "trademarkList", "attrsList"]),
+  },
+  methods: {
+    // 向服务器请求search模块数据
+    getSearchData() {
+      this.$store.dispatch("getSearchList", this.searchParams);
+    },
   },
 };
 </script>
