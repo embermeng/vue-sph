@@ -19,7 +19,18 @@ const actions = {
         }
     }
 }
-const getters = {}
+// 计算属性，在项目当中，为了简化数据而生
+const getters = {
+    goodsList(state) {
+        return state.searchList.goodsList || []
+    },
+    trademarkList(state) {
+        return state.searchList.trademarkList || []
+    },
+    attrsList(state) {
+        return state.searchList.attrsList || []
+    }
+}
 
 export default {
     state,
