@@ -64,10 +64,10 @@ export default {
     // 搜索按钮的回调：需要向search路由跳转
     goSearch() {
       /*
-                路由传递参数：
-                    1. 字符串形式
-                    2. 对象形式
-            */
+          路由传递参数：
+              1. 字符串形式
+              2. 对象形式
+      */
       // this.$router.push(`/search/${this.keyword}?key=${this.keyword.toUpperCase()}`)
       let location = {
         name: "search",
@@ -78,6 +78,12 @@ export default {
       }
       this.$router.push(location);
     },
+  },
+  mounted() {
+    // 通过全局事件总线清除关键字
+    this.$bus.$on("clear", () => {
+      this.keyword = "";
+    });
   },
 };
 </script>

@@ -3,7 +3,7 @@
     <TypeNav />
     <div class="main">
       <div class="py-container">
-        <!--bread-->
+        <!--bread面包屑-->
         <div class="bread">
           <ul class="fl sui-breadcrumb">
             <li>
@@ -11,10 +11,16 @@
             </li>
           </ul>
           <ul class="fl sui-tag">
-            <li class="with-x">手机</li>
-            <li class="with-x">iphone<i>×</i></li>
-            <li class="with-x">华为<i>×</i></li>
-            <li class="with-x">OPPO<i>×</i></li>
+            <!-- 分类的面包屑 -->
+            <li class="with-x" v-if="searchParams.categoryName">
+              {{ searchParams.categoryName }}
+              <i @click="removeCategoryName">×</i>
+            </li>
+            <!-- 关键字的面包屑 -->
+            <li class="with-x" v-if="searchParams.keyword">
+              {{ searchParams.keyword }}
+              <i @click="removeKeyword">×</i>
+            </li>
           </ul>
         </div>
 
@@ -171,7 +177,7 @@ export default {
     this.searchParams.category3Id = this.$route.query.category3Id
     this.searchParams.categoryName = this.$route.query.categoryName
     this.searchParams.keyword = this.$route.params.keyword */
-    Object.assign(this.searchParams, this.$route.query, this.$route.params)
+    Object.assign(this.searchParams, this.$route.query, this.$route.params);
   },
   mounted() {
     this.getSearchData();
@@ -184,6 +190,47 @@ export default {
     // 向服务器请求search模块数据
     getSearchData() {
       this.$store.dispatch("getSearchList", this.searchParams);
+    },
+    // 删除分类的名字
+    removeCategoryName() {
+      // 请求参数置空
+      // 可以把可有可无的字段变成undefined，这些字段不会占用宽带
+      this.searchParams.categoryName = undefined;
+      this.searchParams.category1Id = undefined;
+      this.searchParams.category2Id = undefined;
+      this.searchParams.category3Id = undefined;
+      // this.getSearchData()
+      // 地址栏也需要修改，进行路由跳转
+      // 本意是删除query，如果路径中出现params不应该删除，路由跳转的时候应该带着
+      if (this.$route.params) {
+        this.$router.push({ name: "search", params: this.$route.params });
+      }
+    },
+    // 删除关键字
+    removeKeyword() {
+      // 给服务器带的参数keyword置空
+      this.searchParams.keyword = undefined
+      // 再次发请求
+      // this.getSearchData()
+      // 通知兄弟组件Header清除关键字
+      this.$bus.$emit("clear")
+      // 进行路由跳转
+      if (this.$route.query) {
+        this.$router.push({name: "search", query: this.$route.query})
+      }
+    }
+  },
+  watch: {
+    // 监听路由的信息是否发生变化
+    $route(newValue, oldValue) {
+      console.log(newValue);
+      // 再次整理参数
+      Object.assign(this.searchParams, newValue.query, newValue.params);
+      this.getSearchData();
+      // 每一次请求完毕，应该把相应的1，2，3级分类的id置空。
+      this.searchParams.category1Id = "";
+      this.searchParams.category2Id = "";
+      this.searchParams.category3Id = "";
     },
   },
 };
