@@ -21,34 +21,49 @@
               {{ searchParams.keyword }}
               <i @click="removeKeyword">×</i>
             </li>
+            <!-- 品牌的面包屑 -->
+            <li class="with-x" v-if="searchParams.trademark">
+              {{ searchParams.trademark.split(":")[1] }}
+              <i @click="removeTrademark">×</i>
+            </li>
+            <!-- 平台售卖属性值的面包屑 -->
+            <li
+              class="with-x"
+              v-for="(prop, index) in searchParams.props"
+              :key="index"
+            >
+              {{ prop.split(":")[1] }}
+              <i @click="removeProp(index)">×</i>
+            </li>
           </ul>
         </div>
 
         <!--selector-->
-        <SearchSelector />
+        <SearchSelector @trademarkInfo="trademarkInfo" @attrInfo="attrInfo" />
 
         <!--details-->
         <div class="details clearfix">
           <div class="sui-navbar">
             <div class="navbar-inner filter">
+              <!-- 排序的结果 -->
               <ul class="sui-nav">
-                <li class="active">
-                  <a href="#">综合</a>
+                <li :class="{ active: hasOne }" @click="changeOrder('1')">
+                  <a>
+                    综合
+                    <template v-if="hasOne">
+                      <span v-if="isUp">↑</span>
+                      <span v-else>↓</span>
+                    </template>
+                  </a>
                 </li>
-                <li>
-                  <a href="#">销量</a>
-                </li>
-                <li>
-                  <a href="#">新品</a>
-                </li>
-                <li>
-                  <a href="#">评价</a>
-                </li>
-                <li>
-                  <a href="#">价格⬆</a>
-                </li>
-                <li>
-                  <a href="#">价格⬇</a>
+                <li :class="{ active: hasTwo }" @click="changeOrder('2')">
+                  <a>
+                    价格
+                    <template v-if="hasTwo">
+                      <span v-if="isUp">↑</span>
+                      <span v-else>↓</span>
+                    </template>
+                  </a>
                 </li>
               </ul>
             </div>
@@ -99,35 +114,7 @@
             </ul>
           </div>
           <!-- 分页器 -->
-          <div class="fr page">
-            <div class="sui-pagination clearfix">
-              <ul>
-                <li class="prev disabled">
-                  <a href="#">«上一页</a>
-                </li>
-                <li class="active">
-                  <a href="#">1</a>
-                </li>
-                <li>
-                  <a href="#">2</a>
-                </li>
-                <li>
-                  <a href="#">3</a>
-                </li>
-                <li>
-                  <a href="#">4</a>
-                </li>
-                <li>
-                  <a href="#">5</a>
-                </li>
-                <li class="dotted"><span>...</span></li>
-                <li class="next">
-                  <a href="#">下一页»</a>
-                </li>
-              </ul>
-              <div><span>共10页&nbsp;</span></div>
-            </div>
-          </div>
+          <Pagination />
         </div>
       </div>
     </div>
@@ -156,8 +143,8 @@ export default {
         categoryName: "",
         // 搜索关键字
         keyword: "",
-        // 排序
-        order: "",
+        // 排序：初始状态应该是综合 降序
+        order: "1:desc",
         // 当前第几页
         pageNo: 1,
         // 每页展示数据的个数
@@ -185,6 +172,15 @@ export default {
   computed: {
     // mapGetters参数的写法是数组，因为getters计算是没有划分模块的（home, search）
     ...mapGetters(["goodsList", "trademarkList", "attrsList"]),
+    hasOne() {
+      return this.searchParams.order.includes("1");
+    },
+    isUp() {
+      return this.searchParams.order.includes("asc");
+    },
+    hasTwo() {
+      return this.searchParams.order.includes("2");
+    },
   },
   methods: {
     // 向服务器请求search模块数据
@@ -209,16 +205,65 @@ export default {
     // 删除关键字
     removeKeyword() {
       // 给服务器带的参数keyword置空
-      this.searchParams.keyword = undefined
+      this.searchParams.keyword = undefined;
       // 再次发请求
       // this.getSearchData()
       // 通知兄弟组件Header清除关键字
-      this.$bus.$emit("clear")
+      this.$bus.$emit("clear");
       // 进行路由跳转
       if (this.$route.query) {
-        this.$router.push({name: "search", query: this.$route.query})
+        this.$router.push({ name: "search", query: this.$route.query });
       }
-    }
+    },
+    // 自定义事件的回调
+    trademarkInfo(trademark) {
+      // 1.整理品牌字段的参数  "ID:品牌名称"
+      this.searchParams.trademark = `${trademark.tmId}:${trademark.tmName}`;
+      // 2.再次发请求
+      this.getSearchData();
+    },
+    // 删除品牌面包屑
+    removeTrademark() {
+      // 品牌信息置空
+      this.searchParams.trademark = undefined;
+      this.getSearchData();
+    },
+    // 收集平台属性的回调函数
+    attrInfo(attr, attrValue) {
+      // ["属性ID:属性值:属性名"]
+      let props = `${attr.attrId}:${attrValue}:${attr.attrName}`;
+      // 判断面包屑中是否已经有点击的属性
+      if (!this.searchParams.props.includes(props)) {
+        this.searchParams.props.push(props);
+        // 再次发请求
+        this.getSearchData();
+      }
+    },
+    // 删除平台属性面包屑
+    removeProp(index) {
+      // 再次整理参数
+      this.searchParams.props.splice(index, 1);
+      this.getSearchData();
+    },
+    // 改变排序
+    changeOrder(num) {
+      let arr = this.searchParams.order.split(":");
+      // 如果换了排序依据，需要全改为降序
+      if (arr[0] !== num) {
+        arr[0] = num;
+        arr[1] = "desc"
+      } else {
+        // 没有改排序依据，需要交换升序或降序
+        if (arr[1] === "desc") {
+          arr[1] = "asc";
+        } else {
+          arr[1] = "desc";
+        }
+      }
+      // 整合参数
+      this.searchParams.order = `${arr[0]}:${arr[1]}`;
+      this.getSearchData()
+    },
   },
   watch: {
     // 监听路由的信息是否发生变化

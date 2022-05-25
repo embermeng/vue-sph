@@ -3,8 +3,16 @@
     <div class="type-wrap logo">
       <div class="fl key brand">品牌</div>
       <div class="value logos">
+        <!-- 品牌的地方 -->
         <ul class="logo-list">
-          <li v-for="(trademark) in trademarkList" :key="trademark.tmId">{{trademark.tmName}}</li>
+          <li
+            v-for="trademark in trademarkList"
+            :key="trademark.tmId"
+            @click="tradeHandler(trademark)"
+            style="cursor: pointer"
+          >
+            {{ trademark.tmName }}
+          </li>
         </ul>
       </div>
       <div class="ext">
@@ -12,12 +20,20 @@
         <a href="javascript:void(0);">更多</a>
       </div>
     </div>
-    <div class="type-wrap" v-for="(attr) in attrsList" :key="attr.attrId">
-      <div class="fl key">{{attr.attrName}}</div>
+    <!-- 平台售卖属性 -->
+    <div class="type-wrap" v-for="attr in attrsList" :key="attr.attrId">
+      <!-- 属性名 -->
+      <div class="fl key">{{ attr.attrName }}</div>
       <div class="fl value">
         <ul class="type-list">
-          <li v-for="(attrValue, index) in attr.attrValueList" :key="index">
-            <a>{{attrValue}}</a>
+          <!-- 属性值 -->
+          <li
+            v-for="(attrValue, index) in attr.attrValueList"
+            :key="index"
+            @click="attrInfo(attr, attrValue)"
+            style="cursor: pointer"
+          >
+            <a>{{ attrValue }}</a>
           </li>
         </ul>
       </div>
@@ -31,8 +47,19 @@ import { mapGetters } from "vuex";
 export default {
   name: "SearchSelector",
   computed: {
-    ...mapGetters(['trademarkList', 'attrsList'])
-  }
+    ...mapGetters(["trademarkList", "attrsList"]),
+  },
+  methods: {
+    // 品牌的事件处理函数
+    tradeHandler(trademark) {
+      // 点击后，要整理参数向服务器获取数据，在父组件中发请求，需要把数据传给父组件：自定义事件
+      this.$emit("trademarkInfo", trademark);
+    },
+    // 平台售卖属性值的点击事件
+    attrInfo(attr, attrValue) {
+      this.$emit('attrInfo', attr, attrValue)
+    }
+  },
 };
 </script>
 
