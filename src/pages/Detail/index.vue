@@ -130,7 +130,9 @@
                                 >
                             </div>
                             <div class="add">
-                                <a href="javascript:">加入购物车</a>
+                                <a href="javascript:" @click="addCart"
+                                    >加入购物车</a
+                                >
                             </div>
                         </div>
                     </div>
@@ -413,14 +415,23 @@ export default {
         },
         // 表单元素修改产品个数
         changeCount(event) {
-            let value = event.target.value * 1
+            let value = event.target.value * 1;
             // 如果用户输入非法
-            if(isNaN(value) || value < 1 || Math.floor(value) !== value) {
-                this.proCount = 1
+            if (isNaN(value) || value < 1 || Math.floor(value) !== value) {
+                this.proCount = 1;
             } else {
-                this.proCount = value
+                this.proCount = value;
             }
-
+        },
+        // 加入购物车
+        addCart() {
+            // 1.发请求---派发action
+            this.$store.dispatch("addOrUpdateCart", {
+                skuId: this.$route.params.proId,
+                skuNum: this.proCount
+            });
+            // 2.服务器存储成功---路由跳转
+            // 3.失败---提示
         },
     },
     mounted() {

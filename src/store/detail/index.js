@@ -1,4 +1,4 @@
-import { reqProDetail } from "@/api"
+import { reqProDetail, reqAddOrUpdateCart } from "@/api"
 const state = {
     proDetail: {}
 }
@@ -16,6 +16,12 @@ const actions = {
         if (res.code === 200) {
             commit('GETPRODETAIL', res.data)
         }
+    },
+    // 将产品添加到购物车
+    async addOrUpdateCart({ commit }, {skuId, skuNum}) {
+        // 服务器没有返回其他数据(data)，不用三连环
+        let res = await reqAddOrUpdateCart(skuId, skuNum)
+        console.log(res);
     }
 }
 

@@ -50,3 +50,12 @@ export const reqProDetail = (proId) => {
         method: 'GET'
     })
 }
+
+// 将产品添加到购物车中，或更新某个产品个数
+// /api/cart/addToCart/{ skuId }/{ skuNum } POST
+export const reqAddOrUpdateCart = (id, count) => {
+    return requests({
+        url: `/cart/addToCart/${id}/${count}`,
+        method: 'POST'
+    })
+}
