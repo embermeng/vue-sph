@@ -19,7 +19,17 @@ const actions = {
     }
 }
 
-const getters = {}
+const getters = {
+    categoryView(state) {
+        return state.proDetail.categoryView || {}
+    },
+    skuInfo(state) {
+        return state.proDetail.skuInfo || {}
+    },
+    spuSaleAttrList(state) {
+        return state.proDetail.spuSaleAttrList || []
+    }
+}
 
 export default {
     state,
