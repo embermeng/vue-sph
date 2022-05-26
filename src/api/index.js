@@ -42,3 +42,11 @@ export const reqGetSearchInfo = (arg) => {
         data: arg
     })
 }
+
+// 获取详情页数据
+export const reqProDetail = (proId) => {
+    return requests({
+        url: `/item/${proId}`,
+        method: 'GET'
+    })
+}
