@@ -21,7 +21,12 @@ const actions = {
     async addOrUpdateCart({ commit }, {skuId, skuNum}) {
         // 服务器没有返回其他数据(data)，不用三连环
         let res = await reqAddOrUpdateCart(skuId, skuNum)
-        console.log(res);
+        // 当前这个函数如果执行，返回promise
+        if (res.code === 200) {
+            return 'ok'
+        } else {
+            return Promise.reject(new Error('failed'))
+        }
     }
 }
 

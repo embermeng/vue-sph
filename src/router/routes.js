@@ -6,6 +6,7 @@ import Login from '@/pages/Login'
 import Register from '@/pages/Register'
 import Search from '@/pages/Search'
 import Detail from '@/pages/Detail'
+import AddCartSuccess from '@/pages/AddCartSuccess'
 
 export default [
     {
@@ -42,6 +43,13 @@ export default [
     {
         path: "/detail/:proId?",
         component: Detail,
+        meta: { show: true }
+    },
+    {
+        path: "/addcartsuccess",
+        component: AddCartSuccess,
+        name: 'addcartsuccess',
+        meta: { show: true }
     },
     // 重定向，访问根页面时定向到首页
     {
