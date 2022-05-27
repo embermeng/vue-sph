@@ -1,6 +1,10 @@
 import { reqProDetail, reqAddOrUpdateCart } from "@/api"
+// 封装临时游客身份模块uuid，生成随机字符串
+import { getUUID } from '@/utils/uuid_token'
 const state = {
-    proDetail: {}
+    proDetail: {},
+    // 游客的临时身份
+    uuid_token: getUUID()
 }
 
 const mutations = {
@@ -18,7 +22,7 @@ const actions = {
         }
     },
     // 将产品添加到购物车
-    async addOrUpdateCart({ commit }, {skuId, skuNum}) {
+    async addOrUpdateCart({ commit }, { skuId, skuNum }) {
         // 服务器没有返回其他数据(data)，不用三连环
         let res = await reqAddOrUpdateCart(skuId, skuNum)
         // 当前这个函数如果执行，返回promise

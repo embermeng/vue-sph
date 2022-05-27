@@ -59,3 +59,6 @@ export const reqAddOrUpdateCart = (id, count) => {
         method: 'POST'
     })
 }
+
+// 获取购物车列表数据  /cart/cartList
+export const reqCartList = () => requests({ url: '/cart/cartList', method: 'GET' })
