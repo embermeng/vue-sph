@@ -79,3 +79,9 @@ export const reqGetCode = (phone) => requests({ url: "/user/passport/sendCode/${
 
 // 注册   /user/passport/register   post
 export const reqUserRegister = (data) => requests({ url: "/user/passport/register", method: "POST", data })
+
+// 登录   /user/passport/login   post
+export const reqUserLogin = (data) => requests({url: '/user/passport/login', method: 'POST', data})
+
+// 获取用户信息（需要带着用户的token）   /user/passport/auth/getUserInfo   get
+export const reqUserInfo = () => requests({url: '/user/passport/auth/getUserInfo', method: 'GET'})

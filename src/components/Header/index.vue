@@ -5,11 +5,17 @@
       <div class="container">
         <div class="loginList">
           <p>尚品汇欢迎您！</p>
-          <p>
+          <!-- 没有用户名：未登录 -->
+          <p v-if="!userName">
             <span>请</span>
             <!-- 声明式导航要有to属性 -->
             <router-link to="/login">登录</router-link>
             <router-link to="/register" class="register">免费注册</router-link>
+          </p>
+          <!-- 已登录 -->
+          <p v-else>
+            <a style="cursor: pointer">{{userName}}</a>
+            <a class="register" style="cursor: pointer">退出登录</a>
           </p>
         </div>
         <div class="typeList">
@@ -85,6 +91,12 @@ export default {
       this.keyword = "";
     });
   },
+  computed: {
+    // 用户名信息
+    userName() {
+      return this.$store.state.user.userInfo.name
+    }
+  }
 };
 </script>
 

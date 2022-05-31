@@ -2,7 +2,7 @@
 import axios from "axios";
 // 引入进度条
 import nprogress from "nprogress";
-// 引入store，拿到uuid_token
+// 引入store，拿到uuid_token, token
 import store from "@/store";
 // 引入进度条样式
 import "nprogress/nprogress.css"
@@ -24,10 +24,14 @@ requests.interceptors.request.use((config) => {
         // 请求头添加一个字段
         config.headers.userTempId = store.state.detail.uuid_token
     }
+    // 判断需要携带token带给服务器
+    if (store.state.user.token) {
+        config.headers.token = store.state.user.token
+    }
     return config
 })
 
-// 相应拦截器
+// 响应拦截器
 requests.interceptors.response.use(
     (res) => {
         // 成功的回调函数
