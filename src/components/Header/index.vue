@@ -14,8 +14,10 @@
           </p>
           <!-- 已登录 -->
           <p v-else>
-            <a style="cursor: pointer">{{userName}}</a>
-            <a class="register" style="cursor: pointer">退出登录</a>
+            <a style="cursor: pointer">{{ userName }}</a>
+            <a class="register" style="cursor: pointer" @click="logout"
+              >退出登录</a
+            >
           </p>
         </div>
         <div class="typeList">
@@ -84,6 +86,18 @@ export default {
       }
       this.$router.push(location);
     },
+    // 退出登录
+    async logout() {
+      try {
+        // 1.发请求通知服务器退出登录
+        // 2.清除项目当中的数据【userinfo, token】
+        await this.$store.dispatch("logout");
+        // 回到首页
+        this.$router.push('/home')
+      } catch (error) {
+
+      }
+    },
   },
   mounted() {
     // 通过全局事件总线清除关键字
@@ -94,9 +108,9 @@ export default {
   computed: {
     // 用户名信息
     userName() {
-      return this.$store.state.user.userInfo.name
-    }
-  }
+      return this.$store.state.user.userInfo.name;
+    },
+  },
 };
 </script>
 
