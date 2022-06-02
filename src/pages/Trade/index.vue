@@ -3,11 +3,17 @@
     <h3 class="title">填写并核对订单信息</h3>
     <div class="content">
       <h5 class="receive">收件人信息</h5>
-      <div class="address clearFix" v-for="(addr, index) in addrInfo" :key="addr.id">
-        <span class="username" :class="{selected: addr.isDefault == 1}">{{addr.consignee}}</span>
+      <div
+        class="address clearFix"
+        v-for="(addr, index) in addrInfo"
+        :key="addr.id"
+      >
+        <span class="username" :class="{ selected: addr.isDefault == 1 }">{{
+          addr.consignee
+        }}</span>
         <p @click="changeDefault(addr, addrInfo)">
-          <span class="s1">{{addr.fullAddress}}</span>
-          <span class="s2">{{addr.phoneNum}}</span>
+          <span class="s1">{{ addr.fullAddress }}</span>
+          <span class="s2">{{ addr.phoneNum }}</span>
           <span class="s3" v-show="addr.isDefault == 1">默认地址</span>
         </p>
       </div>
@@ -28,18 +34,22 @@
       </div>
       <div class="detail">
         <h5>商品清单</h5>
-        <ul class="list clearFix" v-for="(order, index) in orderInfo.detailArrayList" :key="order.skuId">
+        <ul
+          class="list clearFix"
+          v-for="(order, index) in orderInfo.detailArrayList"
+          :key="order.skuId"
+        >
           <li>
             <img :src="order.imgUrl" alt="" style="width: 100; height: 100px" />
           </li>
           <li>
-            <p>{{order.skuName}}</p>
+            <p>{{ order.skuName }}</p>
             <h4>7天无理由退货</h4>
           </li>
           <li>
-            <h3>￥{{order.orderPrice}}.00</h3>
+            <h3>￥{{ order.orderPrice }}.00</h3>
           </li>
-          <li>X{{order.skuNum}}</li>
+          <li>X{{ order.skuNum }}</li>
           <li>有货</li>
         </ul>
       </div>
@@ -61,8 +71,11 @@
     <div class="money clearFix">
       <ul>
         <li>
-          <b><i>{{orderInfo.totalNum}}</i>件商品，总商品金额</b>
-          <span>¥{{orderInfo.totalAmount}}.00</span>
+          <b
+            ><i>{{ orderInfo.totalNum }}</i
+            >件商品，总商品金额</b
+          >
+          <span>¥{{ orderInfo.totalAmount }}.00</span>
         </li>
         <li>
           <b>返现：</b>
@@ -75,29 +88,32 @@
       </ul>
     </div>
     <div class="trade">
-      <div class="price">应付金额:　<span>¥{{orderInfo.totalAmount}}.00</span></div>
+      <div class="price">
+        应付金额:　<span>¥{{ orderInfo.totalAmount }}.00</span>
+      </div>
       <div class="receiveInfo">
         寄送至:
-        <span>{{userDefaultAddr.fullAddress || ''}}</span>
-        收货人：<span>{{userDefaultAddr.consignee || ''}}</span>
-        <span>{{userDefaultAddr.phoneNum || ''}}</span>
+        <span>{{ userDefaultAddr.fullAddress || "" }}</span>
+        收货人：<span>{{ userDefaultAddr.consignee || "" }}</span>
+        <span>{{ userDefaultAddr.phoneNum || "" }}</span>
       </div>
     </div>
-    <div class="sub clearFix">
-      <router-link class="subBtn" to="/pay">提交订单</router-link>
+    <div class="sub clearFix" style="cursor: pointer">
+      <a class="subBtn" @click="submitOrder">提交订单</a>
     </div>
   </div>
 </template>
 
 <script>
-import {mapState} from 'vuex'
+import { mapState } from "vuex";
 export default {
   name: "Trade",
   data() {
     return {
       // 收集买家留言信息
-      msg: ''
-    }
+      msg: "",
+      orderId: ''
+    };
   },
   mounted() {
     this.$store.dispatch("getUserAddr");
@@ -106,23 +122,46 @@ export default {
   computed: {
     ...mapState({
       addrInfo: (state) => state.trade.addr,
-      orderInfo: (state) => state.trade.orderInfo
+      orderInfo: (state) => state.trade.orderInfo,
     }),
     // 将来提交订单最终选中的地址
     userDefaultAddr() {
-      return this.addrInfo.find((item) => item.isDefault == 1) || {}
-    }
+      return this.addrInfo.find((item) => item.isDefault == 1) || {};
+    },
   },
   methods: {
     // 修改默认地址
     changeDefault(addr, addrInfo) {
       // 全部的isDefalut为0
       addrInfo.forEach((item) => {
-        item.isDefault = 0
-      })
-      addr.isDefault = 1
-    }
-  }
+        item.isDefault = 0;
+      });
+      addr.isDefault = 1;
+    },
+    // 提交订单
+    async submitOrder() {
+      // 交易编码
+      let { tradeNo } = this.orderInfo;
+      let data = {
+        consignee: this.userDefaultAddr.consignee || '张三', // 最终收件人名字
+        consigneeTel: this.userDefaultAddr.phoneNum || '13700000000', // 手机号
+        deliveryAddress: this.userDefaultAddr.fullAddress || '武汉市', // 地址
+        paymentWay: "ONLINE", // 支付方式
+        orderComment: this.msg, // 留言
+        orderDetailList: this.orderInfo.detailArrayList, // 商品清单
+      };
+
+      let res = await this.$API.reqSubmitOrder(tradeNo, data);
+      if (res.code === 200) {
+        // 成功了保存订单号
+        this.orderId = res.data
+        // 路由跳转 + 路由传参
+        this.$router.push(`/pay?orderId=${this.orderId}`)
+      } else {
+        alert(res.data)
+      }
+    },
+  },
 };
 </script>
 

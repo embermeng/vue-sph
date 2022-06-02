@@ -96,4 +96,7 @@ export const reqAddrInfo = () => requests({url: "/userAddress/auth/findUserAddre
 export const reqOrderInfo = () => requests({url: '/order/auth/trade', method: 'GET'})
 
 // 提交订单   /order/auth/submitOrder?tradeNo={tradeNo}   post
-export const reqSubmitOrder = (tradeNo, data) => requests({url: '/order/auth/submitOrder?tradeNo=${tradeNo}', data, method: 'POST'})
+export const reqSubmitOrder = (tradeNo, data) => requests({url: `/order/auth/submitOrder?tradeNo=${tradeNo}`, data, method: 'POST'})
+
+// 获取订单支付信息   /payment/weixin/createNative/${orderId}   get
+export const reqPayInfo = (orderId) => requests({url: `/payment/weixin/createNative/${orderId}`, method: 'GET'})
