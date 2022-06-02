@@ -88,3 +88,12 @@ export const reqUserInfo = () => requests({url: '/user/passport/auth/getUserInfo
 
 // 退出登录   /user/passport/logout   get
 export const reqLogout = () => requests({url: '/user/passport/logout', method: 'GET'})
+
+// 获取用户地址信息   /userAddress/auth/findUserAddressList   get
+export const reqAddrInfo = () => requests({url: "/userAddress/auth/findUserAddressList", method: 'GET'})
+
+// 获取商品清单   /order/auth/trade   get
+export const reqOrderInfo = () => requests({url: '/order/auth/trade', method: 'GET'})
+
+// 提交订单   /order/auth/submitOrder?tradeNo={tradeNo}   post
+export const reqSubmitOrder = (tradeNo, data) => requests({url: '/order/auth/submitOrder?tradeNo=${tradeNo}', data, method: 'POST'})
