@@ -40,7 +40,7 @@ let router = new VueRouter({
 })
 
 // 全局守卫：前置守卫（在路由跳转之前进行判断）
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
     // to: 可以获取到目标路由信息
     // from: 可以获取源路由信息
     // next: 放行函数   next()放行   next(path)放行到指定路由   next(false)不让你跳到指定路由
@@ -52,11 +52,25 @@ router.beforeEach((to, from, next) => {
     if (token) {
         // 已经登录了还想去login，休想，去首页
         if (to.path === '/login') {
-            next('/')
+            next('/home')
         } else {
             // 登录了，但去的不是login
-            
-            next()
+            // 如果用户名已有
+            if (name) {
+                next()
+            } else {
+                // (刷新后)没有用户信息，派发action，让仓库存储用户信息再跳转
+                try {
+                    await store.dispatch('getUserInfo')
+                    // 获取用户信息成功
+                    next()
+                } catch (error) {
+                    // token失效了，获取不到用户信息，重新登录
+                    // 清除token
+                    await store.dispatch('logout')
+                    next('/login')
+                }
+            }
         }
     } else {
         // 未登录

@@ -8,6 +8,8 @@ import Search from '@/pages/Search'
 import Detail from '@/pages/Detail'
 import AddCartSuccess from '@/pages/AddCartSuccess'
 import ShopCart from '@/pages/ShopCart'
+import Trade from '@/pages/Trade'
+import Pay from '@/pages/Pay'
 
 export default [
     {
@@ -56,6 +58,18 @@ export default [
         path: "/shopcart",
         component: ShopCart,
         name: 'shopcart',
+        meta: { show: true }
+    },
+    {
+        path: "/trade",
+        component: Trade,
+        name: 'trade',
+        meta: { show: true }
+    },
+    {
+        path: "/pay",
+        component: Pay,
+        name: 'pay',
         meta: { show: true }
     },
     // 重定向，访问根页面时定向到首页
