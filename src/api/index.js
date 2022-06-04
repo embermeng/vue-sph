@@ -100,3 +100,9 @@ export const reqSubmitOrder = (tradeNo, data) => requests({url: `/order/auth/sub
 
 // 获取订单支付信息   /payment/weixin/createNative/${orderId}   get
 export const reqPayInfo = (orderId) => requests({url: `/payment/weixin/createNative/${orderId}`, method: 'GET'})
+
+// 获取支付订单状态   /payment/weixin/queryPayStatus/{orderId}
+export const reqPayStatus = (orderId) => requests({url: `/payment/weixin/queryPayStatus/${orderId}`, method: 'GET'})
+
+// 获取我的订单列表   /order/auth/${page}/${limit}   get
+export const reqGetMyOrder = (page, limit) => requests({url: `/order/auth/${page}/${limit}`, method: 'GET'})

@@ -1,6 +1,5 @@
 <template>
     <div class="pagination">
-		{{pageNo}}
         <button @click="toPageNum(pageNo - 1)" :disabled="pageNo === 1">
             上一页
         </button>
@@ -75,7 +74,7 @@ export default {
         },
     },
     methods: {
-        // 传给父组件上一页数
+        // 传给父组件页数
         toPageNum(num) {
             this.$emit("pageNum", num);
         },

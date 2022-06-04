@@ -44,7 +44,6 @@ router.beforeEach(async (to, from, next) => {
     // to: 可以获取到目标路由信息
     // from: 可以获取源路由信息
     // next: 放行函数   next()放行   next(path)放行到指定路由   next(false)不让你跳到指定路由
-    // next()
     // 登录了才有token
     let token = store.state.user.token
     // 用户信息
@@ -73,8 +72,17 @@ router.beforeEach(async (to, from, next) => {
             }
         }
     } else {
-        // 未登录
-        next()
+        // 未登录，不能去交易、支付、个人中心页面，这些应该去登录页面
+        let toPath = to.path
+        // 判断条件
+        let flag = toPath.includes('/trade') || toPath.includes('/pay') || toPath.includes('/center');
+        if (flag) {
+            // 把未登录的时候想去而没去成的信息存储于地址栏中
+            next('/login?redirect=' + toPath)
+        } else {
+            next()
+        }
+
     }
 })
 
