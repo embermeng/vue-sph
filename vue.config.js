@@ -9,4 +9,6 @@ module.exports = {
             },
         },
     },
+    // 项目打包时不要map文件
+    productionSourceMap: false
 }
